@@ -18,7 +18,7 @@ class BaseController extends Controller
      **/
     public function sendResponse($result, $message)
     {
-        $reponse = [
+        $response = [
             'success' => true,
             'data' => $result,
             'message' => $message
@@ -40,7 +40,6 @@ class BaseController extends Controller
     {
         $reponse = [
             'success' => false,
-            'data' => $result,
             'message' => $error
         ];
         if (!empty($errorMessages)) {

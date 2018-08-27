@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller as BaseController;
+use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Book;
 use Validator;
 
@@ -62,7 +62,7 @@ class BookController extends BaseController
     public function show($id)
     {
         $book = Book::findOrFail($id);
-        if (is_null(book)) {
+        if (is_null($book)) {
             return $this->sendError('Book not found!');
         }
         return $this->sendResponse($book->toArray(), 'Book read successfully.');
