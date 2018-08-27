@@ -61,7 +61,11 @@ class BookController extends BaseController
      */
     public function show($id)
     {
-        //
+        $book = Book::findOrFail($id);
+        if (is_null(book)) {
+            return $this->sendError('Book not found!');
+        }
+        return $this->sendResponse($book->toArray(), 'Book read successfully.');
     }
 
     /**
@@ -82,9 +86,23 @@ class BookController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Book $book)
     {
-        //
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'name' => 'required|string|max:255',
+            'details' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error', $validator->errors());
+        }
+
+        $book->name = $input['name'];
+        $book->details = $input['details'];
+        $book->save();
+
+        return $this->sendResponse($book->toArray(), 'Book updated successfully.');
     }
 
     /**
@@ -93,8 +111,9 @@ class BookController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Book $book)
     {
-        //
+        $book->delete();
+        return $this->sendResponse($book->toArray(), 'Book deleted successfully.');
     }
 }
