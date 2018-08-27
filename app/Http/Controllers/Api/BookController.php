@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller as BaseController;
+use App\Book;
+use Validator;
 
-class BookController extends Controller
+class BookController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +16,9 @@ class BookController extends Controller
      */
     public function index()
     {
-        //
+        $books = Book::all();
+
+        return $this->sendResponse($books->toArray(), 'Books read successfully.');
     }
 
     /**
@@ -35,7 +39,18 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'name' => 'required|string|max:255',
+            'details' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error', $validator->errors());
+        }
+
+        $book = Book::create($input);
+        return $this->sendResponse($book->toArray(), 'Book created successfully.');
     }
 
     /**
