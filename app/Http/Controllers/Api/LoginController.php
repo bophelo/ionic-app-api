@@ -39,7 +39,7 @@ class LoginController extends Controller
         try {
 
             if (! $token = JWTAuth::attempt($credentials)) {
-                return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials. Please make sure you entered the right information and you have verified your email address.'], 404);
+                return response()->json(['error' => 'Invalid account details.'], 401);
             }
 
         } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
