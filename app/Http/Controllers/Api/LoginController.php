@@ -36,16 +36,26 @@ class LoginController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        try{
-            if(!$token = JWTAuth::attempt($credentials))
-            {
-                return response()->json(['error' => 'Invalid account details.'], 401);
+        try {
+
+            if (! $token = JWTAuth::attempt($credentials)) {
+                return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials. Please make sure you entered the right information and you have verified your email address.'], 404);
             }
-        }
-        catch (JWTException $e) {
-            return response()->json(['error' => 'Could not create token. Please try logging in again.'], 500);
+
+        } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+
+            return response()->json(['token_expired'], $e->getStatusCode());
+
+        } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+
+            return response()->json(['token_invalid'], $e->getStatusCode());
+
+        } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
+
+            return response()->json(['token_absent'], $e->getStatusCode());
+
         }
 
-        return response()->json([compact('token')], 200);
+        return response()->json(compact('token'));
     }
 }
